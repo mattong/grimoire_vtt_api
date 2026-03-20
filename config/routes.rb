@@ -10,6 +10,8 @@ Rails.application.routes.draw do
 
   namespace :api do
     post "/auth/register", to: "users#create"
-    post "/auth/login", to: "session#create"
+    post "/auth/login", to: "sessions#create"
+
+    resources :games
   end
 end
