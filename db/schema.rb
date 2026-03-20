@@ -17,15 +17,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_124641) do
 
   create_table "game_memberships", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.bigint "game_id", null: false
+    t.uuid "game_id", null: false
     t.string "role"
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
+    t.uuid "user_id", null: false
     t.index ["game_id"], name: "index_game_memberships_on_game_id"
     t.index ["user_id"], name: "index_game_memberships_on_user_id"
   end
 
-  create_table "games", force: :cascade do |t|
+  create_table "games", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.text "description"
@@ -34,7 +34,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_124641) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "email"
     t.string "password_digest"
