@@ -26,21 +26,20 @@ class Api::GamesController < ApplicationController
   end
 
   def create
+    user = User.find(params[:user_id])
     @game = Game.new(game_params)
 
     # Equivalent to Ecto.Multi
     ActiveRecord::Base.transaction do
       if @game.save
-        # temporary
-        user = User.find(params[:user_id])
-
         @game.game_memberships.create!(user: user, role: :gm)
         render json: @game, status: :created
       else
         render json: { errors: @game.errors.full_messages }, status: :unprocessable_content
       end
     end
-
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "User not found" }, status: :not_found
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
   end
@@ -54,6 +53,6 @@ class Api::GamesController < ApplicationController
   def set_game
     @game = Game.find(params[:id])
   rescue ActiveRecord::RecordNotFound
-      render json: { error: "Game not found" }, status: :not_found
+    render json: { error: "Game not found" }, status: :not_found
   end
 end

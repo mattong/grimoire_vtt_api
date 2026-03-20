@@ -73,8 +73,5 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include FactoryBot::Syntax::Methods
-
-  RSpec.configure do |config|
-    config.include ApiHelpers, type: :request
-  end
+  config.include ApiHelpers, type: :request
 end

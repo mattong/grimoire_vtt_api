@@ -29,7 +29,16 @@ RSpec.describe "Api::Users", type: :request do
     context "with invalid parameters" do
       it("does not create a new User and returns error messages") do
         expect {
-          post "/api/auth/register", params: { user: { email: "", username: "", password: "short", password_confirmation: "short" } }, as: :json
+          post "/api/auth/register",
+               params: {
+                 user: {
+                   email: "",
+                   username: "",
+                   password: "short",
+                   password_confirmation: "short"
+                 }
+               },
+               as: :json
         }.not_to change(User, :count)
 
         expect(response).to have_http_status(:unprocessable_content)

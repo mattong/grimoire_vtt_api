@@ -4,9 +4,11 @@ RSpec.describe "Api::Games", type: :request do
   let!(:user) { create(:user) }
   let(:valid_attributes) do
     {
-      title: "Epic Adventure",
-      description: "An epic adventure game for testing.",
-      system: "D&D 5e",
+      game: {
+        title: "Epic Adventure",
+        description: "An epic adventure game for testing.",
+        system: "D&D 5e"
+      },
       user_id: user.id
     }
   end
@@ -34,7 +36,9 @@ RSpec.describe "Api::Games", type: :request do
     context "with invalid parameters" do
       it "does not create a new Game and returns error messages" do
         expect {
-          post "/api/games", params:  { title: "", description: "", system: "" }, as: :json
+          post "/api/games",
+               params: { game: { title: "", description: "", system: "" } },
+               as: :json
         }.not_to change(Game, :count)
 
         expect(response).to have_http_status(:unprocessable_content)
@@ -69,7 +73,9 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it "updates a game" do
-      patch "/api/games/#{game.id}", params: { game: { title: "Updated Title" } }, as: :json
+      patch "/api/games/#{game.id}",
+            params: { game: { title: "Updated Title" } },
+            as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json["title"]).to eq("Updated Title")
