@@ -1,4 +1,4 @@
-# 📜 Progress Report: Grimore VTT (MVP Phase 1)
+# 📜 Progress Report: Grimoire VTT (MVP Phase 1)
 
 **Current Status:** 🟢 Data Layer Foundation Complete
 **Date:** March 20, 2026
@@ -20,7 +20,7 @@
 | Model              | Status      | Features                                                                        |
 | :----------------- | :---------- | :------------------------------------------------------------------------------ |
 | **User**           | ✅ Complete | UUIDs, BCrypt (`has_secure_password`), Uniqueness validations (email/username). |
-| **Game**           | ✅ Complete | UUIDs, Soft-delete (`archived_at`), System/Title validations.                   |
+| **Game**           | ✅ Complete | UUIDs, Soft-delete (`archived_at`), Title validation.                           |
 | **GameMembership** | ✅ Complete | Many-to-Many Join table, **Role Enum** (GM vs Player), Scoped uniqueness.       |
 
 ### 3. Testing Coverage

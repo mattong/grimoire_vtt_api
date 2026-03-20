@@ -3,10 +3,10 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
   describe "validations" do
     it "requires an email" do
-    user = User.new(email: nil)
+      user = User.new(email: nil)
 
-    expect(user).not_to be_valid
-    expect(user.errors[:email]).to include("can't be blank")
+      expect(user).not_to be_valid
+      expect(user.errors[:email]).to include("can't be blank")
     end
 
     it "requires a username" do
@@ -26,7 +26,7 @@ RSpec.describe User, type: :model do
   describe "uniqueness" do
     it "requires an email to be unique" do
       existing_user = create(:user, email: "iexist@existing.com")
-      duplicated_user = User.new(email: existing_user.email)
+      duplicated_user = build(:user, email: existing_user.email)
 
       expect(duplicated_user).not_to be_valid
       expect(duplicated_user.errors[:email]).to include("has already been taken")
