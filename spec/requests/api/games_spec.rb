@@ -37,7 +37,7 @@ RSpec.describe "Api::Games", type: :request do
       it "does not create a new Game and returns error messages" do
         expect {
           post "/api/games",
-               params: { game: { title: "", description: "", system: "" } },
+               params: { game: { title: "", description: "", system: "" }, user_id: user.id  },
                as: :json
         }.not_to change(Game, :count)
 

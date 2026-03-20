@@ -38,8 +38,6 @@ class Api::GamesController < ApplicationController
         render json: { errors: @game.errors.full_messages }, status: :unprocessable_content
       end
     end
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "User not found" }, status: :not_found
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
   end
