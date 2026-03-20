@@ -8,6 +8,6 @@ class CreateGameMemberships < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :game_memberships, [:user_id, :game_id], unique: true
+    add_index :game_memberships, [ :user_id, :game_id ], unique: true
   end
 end
