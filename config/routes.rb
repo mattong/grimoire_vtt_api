@@ -10,13 +10,18 @@ Rails.application.routes.draw do
 
   devise_for :users, path: "", path_names: {
     sign_in: "api/auth/login",
-    sign_out: "api/auth/logout",
-    registration: "api/auth/signup"
+    sign_out: "api/auth/logout"
   },
   controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
-  }
+  },
+  skip: [:registrations]
+
+  devise_scope :user do
+    post "api/auth/signup", to: "users/registrations#create"
+  end
+
 
   namespace :api do
     resources :games
