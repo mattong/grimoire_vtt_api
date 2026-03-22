@@ -3,10 +3,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   before_action :configure_sign_up_params, only: [:create]
 
-  def sign_up(resource_name, resource)
-    sign_in(resource_name, resource, store: false)
-  end
-
   private
 
   def respond_with(resource, _opts = {})

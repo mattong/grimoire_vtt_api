@@ -331,4 +331,11 @@ Devise.setup do |config|
     ]
     jwt.expiration_time = 1.day.to_i
   end
+
+  # To remove session storage for API-only applications, you can configure Warden to skip session storage for the :user scope:
+  config.warden do |warden|
+    warden.strategies_active_by_default(scope: :user).delete(:session)
+
+    warden.scope_defaults :user, store: false
+  end
 end
