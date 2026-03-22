@@ -53,5 +53,22 @@ RSpec.describe "Users::Registrations", type: :request do
       expect(response).to have_http_status(:unprocessable_content)
       expect(json["errors"]).to include("Username has already been taken")
     end
+
+    it "returns error message if password_confirmation does not match password" do
+      expect {
+        post "/api/auth/signup",
+             params: {
+               user: {
+                 username: "elminster_the_sage",
+                 password: "mystra123",
+                 password_confirmation: "wrong_password"
+               }
+             },
+             as: :json
+      }.not_to change(User, :count)
+
+      expect(response).to have_http_status(:unprocessable_content)
+      expect(json["errors"]).to include("Password confirmation doesn't match Password")
+    end
   end
 end
