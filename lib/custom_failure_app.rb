@@ -1,10 +1,6 @@
 class CustomFailureApp < Devise::FailureApp
   def respond
-    if request.format.json?
-      json_error_response
-    else
-      super
-    end
+    json_error_response
   end
 
   private
