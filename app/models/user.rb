@@ -12,6 +12,8 @@ class User < ApplicationRecord
   has_many :game_memberships
   has_many :games, through: :game_memberships
 
+  before_validation :generate_jti, on: :create
+
   private
 
   def generate_jti
