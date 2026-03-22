@@ -13,11 +13,10 @@ RSpec.describe "Api::Sessions", type: :request do
     context "with valid credentials" do
       it "returns the user data" do
         post "/api/auth/login",
-             params: { email: user.email, password: "mystra123" },
+             params: { username: user.username, password: "mystra123" },
              as: :json
 
         expect(response).to have_http_status(:ok)
-        expect(json["user"]["email"]).to eq(user.email)
         expect(json["user"]["username"]).to eq(user.username)
         expect(json["user"]).not_to have_key("password_digest")
       end
@@ -26,17 +25,17 @@ RSpec.describe "Api::Sessions", type: :request do
     context "with invalid credentials" do
       it "returns an error message" do
         post "/api/auth/login",
-             params: { email: user.email, password: "wrongpassword" },
+             params: { username: user.username, password: "wrongpassword" },
              as: :json
 
         expect(response).to have_http_status(:unauthorized)
-        expect(json["error"]).to eq("Invalid email or password")
+        expect(json["error"]).to eq("Invalid username or password")
       end
 
-      it "returns unauthorized when email is not found" do
+      it "returns unauthorized when username is not found" do
         post "/api/auth/login",
              params: {
-               email: "mysteriousman@example.com",
+               username: "mysteriousman@example.com",
                password: "idonotexist"
              },
              as: :json

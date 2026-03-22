@@ -10,18 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_124641) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_11_122534) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
 
-  create_table "game_memberships", force: :cascade do |t|
+  create_table "game_memberships", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.uuid "game_id", null: false
     t.string "role"
     t.datetime "updated_at", null: false
     t.uuid "user_id", null: false
     t.index ["game_id"], name: "index_game_memberships_on_game_id"
+    t.index ["user_id", "game_id"], name: "index_game_memberships_on_user_id_and_game_id", unique: true
     t.index ["user_id"], name: "index_game_memberships_on_user_id"
   end
 
@@ -30,18 +31,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_124641) do
     t.datetime "created_at", null: false
     t.text "description"
     t.string "system"
-    t.string "title"
+    t.string "title", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "email"
-    t.string "password_digest"
+    t.string "encrypted_password", null: false
+    t.string "jti", null: false
     t.datetime "updated_at", null: false
-    t.string "username"
-    t.index ["email"], name: "index_users_on_email"
-    t.index ["username"], name: "index_users_on_username"
+    t.string "username", null: false
+    t.index ["jti"], name: "index_users_on_jti", unique: true
+    t.index ["username"], name: "index_users_on_username", unique: true
   end
 
   add_foreign_key "game_memberships", "games"
