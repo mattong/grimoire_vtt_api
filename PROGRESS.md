@@ -18,7 +18,7 @@
 
 ### 2. Core API Handshake
 
-- **Registration:** `POST /api/auth/register` (Returns 201 Created + JWT).
+- **Registration:** `POST /api/auth/signup` (Returns 201 Created + JWT).
 - **Login:** `POST /api/auth/login` (Returns 200 OK + JWT).
 - **Logout:** `DELETE /api/auth/logout` (Invalidates JTI + Returns 200 OK).
 
