@@ -25,7 +25,7 @@ RSpec.describe "Api::Users", type: :request do
     end
 
     context "with invalid parameters" do
-      it("does not create a new User and returns error messages") do
+      it "does not create a new User and returns error messages" do
         expect {
           post "/api/auth/register",
                params: {
