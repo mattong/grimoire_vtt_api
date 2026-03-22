@@ -53,4 +53,7 @@ group :development, :test do
   gem "faker"
 
   gem "action_text-trix", ">= 2.1.17"
+
+  gem "devise"
+  gem "devise-jwt"
 end
