@@ -1,3 +1,9 @@
+# 📌 Current Progress Report
+
+> This section reflects the **latest** state of the project as of **March 22, 2026** (Devise + JWT authentication). Any earlier reports below are archived history and may reference superseded approaches.
+
+---
+
 # 📜 Progress Report: Grimoire VTT (MVP Phase 1)
 
 **Current Status:** 🔵 Authentication & Identity Layer Complete
@@ -48,6 +54,14 @@
 
 - [ ] **GameInvitation:** Shareable token logic.
 - [ ] **ResourceTemplate:** JSONB schema for custom character sheets.
+
+---
+
+# 📂 Archived Progress Reports
+
+> The following reports are preserved for historical reference. They describe earlier stages of the project and may reference approaches that have since been superseded (e.g. `has_secure_password`, email-based validations).
+
+---
 
 # 📜 Progress Report: Grimoire VTT (MVP Phase 1)
 
