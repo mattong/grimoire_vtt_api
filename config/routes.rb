@@ -8,10 +8,17 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  namespace :api do
-    post "/auth/register", to: "users#create"
-    post "/auth/login", to: "sessions#create"
+  devise_for :users, path: "", path_names: {
+    sign_in: "api/auth/login",
+    sign_out: "api/auth/logout",
+    registration: "api/auth/signup"
+  },
+  controllers: {
+    sessions: "users/sessions",
+    registrations: "users/registrations"
+  }
 
+  namespace :api do
     resources :games
   end
 end
