@@ -315,7 +315,13 @@ Devise.setup do |config|
   # config.sign_in_after_change_password = true
 
   config.jwt do |jwt|
-    jwt.secret = Rails.application.credentials.secret_key_base || "a_very_long_secret_string_at_least_32_chars"
+    secret = Rails.application.credentials.secret_key_base || Rails.application.secret_key_base
+
+    if secret.blank? and Rails.env.production?
+      raise "Secret key base is not set in production environment. Please set it in credentials or secrets."
+    end
+
+    jwt.secret = secret || "local_development_and_testing_secret_key_base"
     jwt.dispatch_requests = [
       ["POST", %r{^/api/auth/login$}],
       ["POST", %r{^/api/auth/signup$}]
