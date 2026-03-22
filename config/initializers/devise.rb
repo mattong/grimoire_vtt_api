@@ -333,9 +333,12 @@ Devise.setup do |config|
   end
 
   # To remove session storage for API-only applications, you can configure Warden to skip session storage for the :user scope:
+  require "custom_failure_app"
   config.warden do |warden|
     warden.default_strategies(scope: :user).delete(:session)
 
     warden.scope_defaults :user, store: false
+
+    warden.failure_app = CustomFailureApp
   end
 end
