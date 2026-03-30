@@ -9,8 +9,10 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 # return unless Rails.env.test?
 require 'rspec/rails'
 
-require 'support/api_helpers'
 # Add additional requires below this line. Rails is not loaded until this point!
+require 'support/api_helpers'
+require 'support/auth_helpers'
+require 'devise/jwt/test_helpers'
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -74,4 +76,6 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
   config.include ApiHelpers, type: :request
+  config.include AuthHelpers, type: :request
+  config.include Devise::Test::IntegrationHelpers, type: :request
 end
