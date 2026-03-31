@@ -1,7 +1,10 @@
 class Api::GamesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_game, only: [:show, :update, :destroy]
+  before_action :ensure_gm!, only: [:update, :destroy]
   def index
-    @games = Game.all
+    # Scope to active (non-archived) games the current user is a member of
+    @games = current_user.games.active
     render json: @games, status: :ok
   end
 
@@ -26,17 +29,12 @@ class Api::GamesController < ApplicationController
   end
 
   def create
-    user = User.find(params[:user_id])
     @game = Game.new(game_params)
-
     # Equivalent to Ecto.Multi
     ActiveRecord::Base.transaction do
-      if @game.save
-        @game.game_memberships.create!(user: user, role: :gm)
-        render json: @game, status: :created
-      else
-        render json: { errors: @game.errors.full_messages }, status: :unprocessable_content
-      end
+      @game.save!
+      @game.game_memberships.create!(user: current_user, role: :gm)
+      render json: @game, status: :created
     end
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
@@ -49,8 +47,14 @@ class Api::GamesController < ApplicationController
   end
 
   def set_game
-    @game = Game.find(params[:id])
+    @game = current_user.games.active.find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Game not found" }, status: :not_found
+  end
+
+  def ensure_gm!
+    unless @game.gm?(current_user)
+      render json: { error: "Only a GM can do that!" }, status: :unauthorized
+    end
   end
 end

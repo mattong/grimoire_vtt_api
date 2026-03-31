@@ -55,5 +55,5 @@ group :development, :test do
   gem "factory_bot_rails"
   gem "faker"
 
-  gem "action_text-trix", ">= 2.1.17"
+  gem "action_text-trix", ">= 2.1.18"
 end

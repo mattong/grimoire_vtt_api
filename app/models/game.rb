@@ -6,4 +6,8 @@ class Game < ApplicationRecord
 
   scope :active, -> { where(archived_at: nil) }
   scope :archived, -> { where.not(archived_at: nil) }
+
+  def gm?(user)
+    game_memberships.exists?(user: user, role: "gm")
+  end
 end
