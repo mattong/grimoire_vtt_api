@@ -3,7 +3,7 @@ class Api::GamesController < ApplicationController
   before_action :set_game, only: [:show, :update, :destroy]
   before_action :ensure_gm!, only: [:update, :destroy]
   def index
-    # Need to add scoping for games that aren't archived
+    # Scope to active (non-archived) games the current user is a member of
     @games = current_user.games.active
     render json: @games, status: :ok
   end
@@ -53,7 +53,7 @@ class Api::GamesController < ApplicationController
   end
 
   def ensure_gm!
-    if not @game.gm?(current_user)
+    unless @game.gm?(current_user)
       render json: { error: "Only a GM can do that!" }, status: :unauthorized
     end
   end

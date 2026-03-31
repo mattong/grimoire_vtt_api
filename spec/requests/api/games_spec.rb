@@ -66,6 +66,7 @@ RSpec.describe "Api::Games", type: :request do
     before do
       create(:game_membership, user: user, game: user_game, role: "gm")
       create(:game_membership, user: other_user, game: other_game, role: "gm")
+      create(:game_membership, user: user, game: archived_game, role: "gm")
     end
 
     it("only returns non-archived games the user is a member of") do
@@ -86,6 +87,7 @@ RSpec.describe "Api::Games", type: :request do
     before do
       create(:game_membership, user: user, game: user_game, role: "gm")
       create(:game_membership, user: other_user, game: other_game, role: "gm")
+      create(:game_membership, user: user, game: archived_game, role: "gm")
     end
 
     it("only allows access to games the user is a member of") do
@@ -101,7 +103,7 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it("returns not found for non-existent game") do
-      get "/api/games/9999", headers: headers, as: :json
+      get "/api/games/#{SecureRandom.uuid}", headers: headers, as: :json
 
       expect(response).to have_http_status(:not_found)
       expect(json["error"]).to eq("Game not found")
