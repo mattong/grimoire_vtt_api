@@ -78,4 +78,8 @@ RSpec.configure do |config|
   config.include ApiHelpers, type: :request
   config.include AuthHelpers, type: :request
   config.include Devise::Test::IntegrationHelpers, type: :request
+
+  config.after(:each) do
+    Faker::UniqueGenerator.clear()
+  end
 end
