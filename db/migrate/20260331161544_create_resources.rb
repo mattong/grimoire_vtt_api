@@ -5,7 +5,7 @@ class CreateResources < ActiveRecord::Migration[8.1]
       t.references :game, null: false, foreign_key: true, type: :uuid
       t.string :name
       t.jsonb :data, null: false, default: {}
-      t.references :player, null: false, foreign_key: { to_table: :users }, type: :uuid
+      t.references :player, foreign_key: { to_table: :users }, type: :uuid
       t.datetime :archived_at
 
       t.timestamps

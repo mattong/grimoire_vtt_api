@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :resource do
-    template { nil }
-    game { nil }
+    resource_template
+    game
     name { "MyString" }
-    data { "" }
-    player { nil }
+    data { {} }
+    player
   end
 end

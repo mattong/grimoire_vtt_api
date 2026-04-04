@@ -2,7 +2,6 @@ module GameAuthenticatable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_game
   end
 
   private
