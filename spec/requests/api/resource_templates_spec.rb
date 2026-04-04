@@ -30,7 +30,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
     create(:game_membership, user: player, game: game, role: :player)
   end
 
-  describe "POST /api/resource_templates" do
+  describe "POST /api/games/:game_id/resource_templates" do
     context "with valid parameters and gm authentication" do
       it "creates a new ResourceTemplate and returns the template data" do
         expect {
