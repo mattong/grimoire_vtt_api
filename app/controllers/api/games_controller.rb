@@ -1,4 +1,5 @@
 class Api::GamesController < ApplicationController
+  include GameAuthenticatable
   before_action :authenticate_user!
   before_action :set_game, only: [:show, :update, :destroy]
   before_action :ensure_gm!, only: [:update, :destroy]
@@ -44,17 +45,5 @@ class Api::GamesController < ApplicationController
 
   def game_params
     params.require(:game).permit(:title, :system, :description)
-  end
-
-  def set_game
-    @game = current_user.games.active.find(params[:id])
-  rescue ActiveRecord::RecordNotFound
-    render json: { error: "Game not found" }, status: :not_found
-  end
-
-  def ensure_gm!
-    unless @game.gm?(current_user)
-      render json: { error: "Only a GM can do that!" }, status: :unauthorized
-    end
   end
 end
