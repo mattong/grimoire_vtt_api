@@ -24,6 +24,8 @@ Rails.application.routes.draw do
 
 
   namespace :api do
-    resources :games
+    resources :games do
+      resources :resource_templates
+    end
   end
 end

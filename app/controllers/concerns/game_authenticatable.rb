@@ -15,7 +15,7 @@ module GameAuthenticatable
 
   def ensure_gm!
     unless @game.gm?(current_user)
-      render json: { error: "Only a GM can do that!" }, status: :unauthorized
+      render json: { error: "Only a GM can do that!" }, status: :forbidden
     end
   end
 end

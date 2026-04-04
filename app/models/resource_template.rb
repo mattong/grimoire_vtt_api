@@ -8,6 +8,9 @@ class ResourceTemplate < ApplicationRecord
 
   validate :validate_schema_structure
 
+  scope :active, -> { where(archived_at: nil) }
+  scope :archived, -> { where.not(archived_at: nil) }
+
   private
 
   def validate_schema_structure
