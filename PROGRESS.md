@@ -78,12 +78,3 @@
 | [March 31, 2026](docs/progress/2026-03-31.md) | 🔵 Games CRUD & Authorization Complete      |
 | [March 22, 2026](docs/progress/2026-03-22.md) | 🔵 Authentication & Identity Layer Complete |
 | [March 20, 2026](docs/progress/2026-03-20.md) | 🟢 Data Layer Foundation Complete           |
-
----
-
-## 📂 Past Reports
-
-| Date                                          | Status                                      |
-| :-------------------------------------------- | :------------------------------------------ |
-| [March 22, 2026](docs/progress/2026-03-22.md) | 🔵 Authentication & Identity Layer Complete |
-| [March 20, 2026](docs/progress/2026-03-20.md) | 🟢 Data Layer Foundation Complete           |
