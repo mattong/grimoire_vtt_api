@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_11_122534) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_31_161544) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -35,6 +35,35 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_122534) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "resource_templates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.uuid "game_id", null: false
+    t.string "name", null: false
+    t.jsonb "schema", default: {}, null: false
+    t.string "template_type", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "name"], name: "index_resource_templates_on_game_id_and_name", unique: true
+    t.index ["game_id"], name: "index_resource_templates_on_game_id"
+    t.index ["template_type"], name: "index_resource_templates_on_template_type"
+  end
+
+  create_table "resources", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "archived_at"
+    t.datetime "created_at", null: false
+    t.jsonb "data", default: {}, null: false
+    t.uuid "game_id", null: false
+    t.string "name"
+    t.uuid "player_id"
+    t.uuid "resource_template_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "player_id"], name: "index_resources_on_game_id_and_player_id"
+    t.index ["game_id", "resource_template_id"], name: "index_resources_on_game_id_and_resource_template_id"
+    t.index ["game_id"], name: "index_resources_on_game_id"
+    t.index ["player_id"], name: "index_resources_on_player_id"
+    t.index ["resource_template_id"], name: "index_resources_on_resource_template_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "encrypted_password", null: false
@@ -47,4 +76,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_11_122534) do
 
   add_foreign_key "game_memberships", "games"
   add_foreign_key "game_memberships", "users"
+  add_foreign_key "resource_templates", "games"
+  add_foreign_key "resources", "games"
+  add_foreign_key "resources", "resource_templates"
+  add_foreign_key "resources", "users", column: "player_id"
 end

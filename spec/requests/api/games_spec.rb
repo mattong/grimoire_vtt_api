@@ -153,7 +153,7 @@ RSpec.describe "Api::Games", type: :request do
             headers: auth_headers(non_gm_user),
             as: :json
 
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("Only a GM can do that!")
     end
   end
@@ -186,7 +186,7 @@ RSpec.describe "Api::Games", type: :request do
     it "only allows GMs to archive games" do
       delete "/api/games/#{game.id}", headers: auth_headers(non_gm_user), as: :json
 
-      expect(response).to have_http_status(:unauthorized)
+      expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("Only a GM can do that!")
     end
   end
