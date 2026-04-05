@@ -5,6 +5,5 @@ FactoryBot.define do
     game
     name { "MyString" }
     data { {} }
-    player
   end
 end

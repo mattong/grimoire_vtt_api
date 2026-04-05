@@ -39,9 +39,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_161544) do
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.uuid "game_id", null: false
-    t.string "name"
+    t.string "name", null: false
     t.jsonb "schema", default: {}, null: false
-    t.string "template_type"
+    t.string "template_type", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id", "name"], name: "index_resource_templates_on_game_id_and_name", unique: true
     t.index ["game_id"], name: "index_resource_templates_on_game_id"

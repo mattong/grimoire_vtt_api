@@ -26,6 +26,11 @@ class ResourceTemplate < ApplicationRecord
     end
 
     schema["fields"].each_with_index do |field, index|
+      unless field.is_a?(Hash)
+        errors.add(:schema, "field at index #{index} must be a JSON object")
+        next
+      end
+
       if field["field_key"].blank?
         errors.add(:schema, "field at index #{index} is missing 'field_key'")
       end
@@ -36,7 +41,7 @@ class ResourceTemplate < ApplicationRecord
     end
 
     # Ensure field_keys are unique within the template
-    field_keys = schema["fields"].map { |f| f["field_key"] }
+    field_keys = schema["fields"].select { |f| f.is_a?(Hash) }.map { |f| f["field_key"] }
     if field_keys.uniq.length != field_keys.length
       errors.add(:schema, "field_keys must be unique within the template")
     end
