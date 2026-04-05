@@ -11,10 +11,10 @@ RSpec.describe Resource, type: :model do
   end
 
   describe 'associations' do
-    it 'defines belongs_to associations' do
-      belongs_to_associations = described_class.reflect_on_all_associations(:belongs_to)
+    it 'defines belongs_to associations for resource_template, game, and player' do
+      belongs_to_names = described_class.reflect_on_all_associations(:belongs_to).map(&:name)
 
-      expect(belongs_to_associations).not_to be_empty
+      expect(belongs_to_names).to include(:resource_template, :game, :player)
     end
   end
 end
