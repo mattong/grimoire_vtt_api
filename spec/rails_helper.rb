@@ -80,6 +80,6 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :request
 
   config.after(:each) do
-    Faker::UniqueGenerator.clear()
+    Faker::UniqueGenerator.clear
   end
 end

@@ -15,7 +15,7 @@ class ResourceTemplate < ApplicationRecord
 
   def validate_schema_structure
     if schema.blank?
-      errors.add(:schema, "must be JSON object with a 'fields' array")
+      errors.add(:schema, "must be a JSON object with a 'fields' array")
       return
     end
 
