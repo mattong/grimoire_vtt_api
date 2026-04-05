@@ -54,7 +54,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_31_161544) do
     t.jsonb "data", default: {}, null: false
     t.uuid "game_id", null: false
     t.string "name"
-    t.uuid "player_id", null: false
+    t.uuid "player_id"
     t.uuid "resource_template_id", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id", "player_id"], name: "index_resources_on_game_id_and_player_id"
