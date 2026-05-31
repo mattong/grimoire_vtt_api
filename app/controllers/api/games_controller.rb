@@ -4,8 +4,15 @@ class Api::GamesController < ApplicationController
   before_action :set_game, only: [:show, :update, :destroy]
   before_action :ensure_gm!, only: [:update, :destroy]
   def index
-    @games = current_user.games.active.includes(game_memberships: :user)
-    render json: GameSerializer.new(@games).serialize, status: :ok
+    games = current_user.games.active.includes(game_memberships: :user)
+
+    games = case params[:role]
+            when 'gm'     then games.where(game_memberships: { role: :gm })
+            when 'player' then games.where(game_memberships: { role: :player })
+            else games
+            end
+
+    render json: GameSerializer.new(games).serialize, status: :ok
   end
 
   def show

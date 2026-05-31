@@ -78,6 +78,57 @@ RSpec.describe "Api::Games", type: :request do
     end
   end
 
+  describe "GET /api/games with role filtering" do
+    let!(:gm_game) { create(:game, title: "GM Game") }
+    let!(:player_game) { create(:game, title: "Player Game") }
+
+    before do
+      create(:game_membership, user: user, game: gm_game, role: :gm)
+      create(:game_membership, user: user, game: player_game, role: :player)
+    end
+
+    it "returns only GM games when role=gm" do
+      get "/api/games?role=gm", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json.length).to eq(1)
+      expect(json.first["title"]).to eq("GM Game")
+    end
+
+    it "returns only player games when role=player" do
+      get "/api/games?role=player", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json.length).to eq(1)
+      expect(json.first["title"]).to eq("Player Game")
+    end
+
+    it "returns all games when no role filter" do
+      get "/api/games", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json.length).to eq(2)
+      expect(json.map { |g| g["title"] }).to include("GM Game", "Player Game")
+    end
+
+    it "handles user with mixed roles correctly" do
+      get "/api/games?role=gm", headers: headers, as: :json
+      expect(json.length).to eq(1)
+      expect(json.first["title"]).to eq("GM Game")
+
+      get "/api/games?role=player", headers: headers, as: :json
+      expect(json.length).to eq(1)
+      expect(json.first["title"]).to eq("Player Game")
+    end
+
+    it "ignores invalid role values and returns all games" do
+      get "/api/games?role=invalid", headers: headers, as: :json
+
+      expect(response).to have_http_status(:ok)
+      expect(json.length).to eq(2)
+    end
+  end
+
   describe "GET /api/games/:id" do
     let!(:other_user) { create(:user) }
     let!(:user_game) { create(:game, title: "User's Game") }
