@@ -6,12 +6,12 @@ class Api::ResourcesController < ApplicationController
   before_action :ensure_owner_or_gm!, only: [:update, :destroy]
 
   def index
-    @resources = @game.resources.active
-    render json: @resources, status: :ok
+    @resources = @game.resources.active.includes(:resource_template, :player)
+    render json: ResourceSerializer.new(@resources).serialize, status: :ok
   end
 
   def show
-    render json: @resource, status: :ok
+    render json: ResourceSerializer.new(@resource).serialize, status: :ok
   end
 
   def create
@@ -25,7 +25,7 @@ class Api::ResourcesController < ApplicationController
 
     if result.success?
       if result.resource.save
-        render json: result.resource, status: :created
+        render json: ResourceSerializer.new(result.resource).serialize, status: :created
       else
         render json: { errors: result.resource.errors.full_messages }, status: :unprocessable_content
       end
@@ -38,7 +38,7 @@ class Api::ResourcesController < ApplicationController
 
   def update
     if @resource.update(resource_params)
-      render json: @resource, status: :ok
+      render json: ResourceSerializer.new(@resource).serialize, status: :ok
     else
       render json: { errors: @resource.errors.full_messages }, status: :unprocessable_content
     end
@@ -55,7 +55,7 @@ class Api::ResourcesController < ApplicationController
   private
 
   def set_resource
-    @resource = @game.resources.active.find(params[:id])
+    @resource = @game.resources.active.includes(:resource_template, :player).find(params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Resource not found" }, status: :not_found
   end
