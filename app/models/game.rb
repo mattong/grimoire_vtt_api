@@ -3,6 +3,7 @@ class Game < ApplicationRecord
   has_many :users, through: :game_memberships
 
   has_many :resource_templates, dependent: :destroy
+  has_many :resources, dependent: :destroy
 
   validates :title, presence: true
 

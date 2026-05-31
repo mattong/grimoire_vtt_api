@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :game do
-    title { Faker::Books::CultureSeries.unique.book }
+    title { Faker::Books::CultureSeries.book }
     description { Faker::Lorem.paragraph }
 
     system { "5e" }

@@ -25,7 +25,10 @@ Rails.application.routes.draw do
 
   namespace :api do
     resources :games do
-      resources :resource_templates
+      resources :resource_templates do
+        resources :resources, only: [:create]
+      end
+      resources :resources, only: [:index, :show, :update, :destroy]
     end
   end
 end
