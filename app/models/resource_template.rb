@@ -1,4 +1,7 @@
 class ResourceTemplate < ApplicationRecord
+  include Sluggable
+  friendly_id :name, use: [:scoped, :sequentially_slugged], scope: :game_id
+
   belongs_to :game
 
   has_many :resources, dependent: :destroy

@@ -1,5 +1,6 @@
 FactoryBot.define do
   factory :game do
+    association :gm, factory: :user
     title { Faker::Books::CultureSeries.book }
     description { Faker::Lorem.paragraph }
 

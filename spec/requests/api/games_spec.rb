@@ -91,12 +91,12 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it("only allows access to games the user is a member of") do
-      get "/api/games/#{user_game.id}", headers: headers, as: :json
+      get "/api/games/#{user_game.slug}", headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json["title"]).to eq("User's Game")
 
-      get "/api/games/#{other_game.id}", headers: headers, as: :json
+      get "/api/games/#{other_game.slug}", headers: headers, as: :json
 
       expect(response).to have_http_status(:not_found)
       expect(json["error"]).to eq("Game not found")
@@ -110,7 +110,7 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it("returns not found for archived game") do
-      get "/api/games/#{archived_game.id}", headers: headers, as: :json
+      get "/api/games/#{archived_game.slug}", headers: headers, as: :json
 
       expect(response).to have_http_status(:not_found)
       expect(json["error"]).to eq("Game not found")
@@ -130,7 +130,7 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it "only allows updating games the user is a member of" do
-      patch "/api/games/#{game.id}",
+      patch "/api/games/#{game.slug}",
             params: { game: { title: "Updated Title" } },
             headers: headers,
             as: :json
@@ -138,7 +138,7 @@ RSpec.describe "Api::Games", type: :request do
       expect(response).to have_http_status(:ok)
       expect(json["title"]).to eq("Updated Title")
 
-      patch "/api/games/#{other_game.id}",
+      patch "/api/games/#{other_game.slug}",
             params: { game: { title: "Hacked Title" } },
             headers: headers,
             as: :json
@@ -148,7 +148,7 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it "only allows GMs to update games" do
-      patch "/api/games/#{game.id}",
+      patch "/api/games/#{game.slug}",
             params: { game: { title: "Player Updated Title" } },
             headers: auth_headers(non_gm_user),
             as: :json
@@ -171,20 +171,20 @@ RSpec.describe "Api::Games", type: :request do
     end
 
     it "only allows deleting (archiving) games the user is a member of" do
-      delete "/api/games/#{game.id}", headers: headers, as: :json
+      delete "/api/games/#{game.slug}", headers: headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json["message"]).to eq("Game archived successfully")
       expect(json["archived_at"]).not_to be_nil
 
-      delete "/api/games/#{other_game.id}", headers: headers, as: :json
+      delete "/api/games/#{other_game.slug}", headers: headers, as: :json
 
       expect(response).to have_http_status(:not_found)
       expect(json["error"]).to eq("Game not found")
     end
 
     it "only allows GMs to archive games" do
-      delete "/api/games/#{game.id}", headers: auth_headers(non_gm_user), as: :json
+      delete "/api/games/#{game.slug}", headers: auth_headers(non_gm_user), as: :json
 
       expect(response).to have_http_status(:forbidden)
       expect(json["error"]).to eq("Only a GM can do that!")

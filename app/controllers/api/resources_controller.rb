@@ -15,7 +15,7 @@ class Api::ResourcesController < ApplicationController
   end
 
   def create
-    @template = @game.resource_templates.active.find(params[:resource_template_id])
+    @template = @game.resource_templates.active.find_by!(slug: params[:resource_template_id])
 
     result = ResourceFromTemplateBuilder.call(
       template: @template,
@@ -55,7 +55,8 @@ class Api::ResourcesController < ApplicationController
   private
 
   def set_resource
-    @resource = @game.resources.active.includes(:resource_template, :player).find(params[:id])
+    @resource = @game.resources.active.includes(:resource_template, :player)
+                      .find_by!(slug: params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Resource not found" }, status: :not_found
   end

@@ -29,7 +29,7 @@ class Api::GamesController < ApplicationController
   end
 
   def create
-    @game = Game.new(game_params)
+    @game = Game.new(game_params.merge(gm: current_user))
     ActiveRecord::Base.transaction do
       @game.save!
       @game.game_memberships.create!(user: current_user, role: :gm)

@@ -39,7 +39,7 @@ RSpec.describe "Api::Resources", type: :request do
 
       it "creates a resource for a GM" do
         expect {
-          post "/api/games/#{game.id}/resource_templates/#{template.id}/resources",
+          post "/api/games/#{game.slug}/resource_templates/#{template.slug}/resources",
                params: valid_create_params, headers: gm_headers, as: :json
         }.to change(Resource, :count).by(1)
 
@@ -50,7 +50,7 @@ RSpec.describe "Api::Resources", type: :request do
 
       it "rejects a player" do
         expect {
-          post "/api/games/#{game.id}/resource_templates/#{template.id}/resources",
+          post "/api/games/#{game.slug}/resource_templates/#{template.slug}/resources",
                params: valid_create_params, headers: player_headers, as: :json
         }.not_to change(Resource, :count)
 
@@ -63,7 +63,7 @@ RSpec.describe "Api::Resources", type: :request do
 
       it "creates a resource for a player" do
         expect {
-          post "/api/games/#{game.id}/resource_templates/#{template.id}/resources",
+          post "/api/games/#{game.slug}/resource_templates/#{template.slug}/resources",
                params: valid_create_params, headers: player_headers, as: :json
         }.to change(Resource, :count).by(1)
 
@@ -73,7 +73,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "with invalid data" do
       it "returns 422 when name is missing" do
-        post "/api/games/#{game.id}/resource_templates/#{template.id}/resources",
+        post "/api/games/#{game.slug}/resource_templates/#{template.slug}/resources",
              params: { resource: { name: "", data: {} } },
              headers: gm_headers, as: :json
 
@@ -90,7 +90,7 @@ RSpec.describe "Api::Resources", type: :request do
     let!(:other_game_resource) { create(:resource, name: "Sauron") }
 
     it "returns all active resources for the game" do
-      get "/api/games/#{game.id}/resources", headers: player_headers, as: :json
+      get "/api/games/#{game.slug}/resources", headers: player_headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json.size).to eq(2)
@@ -101,7 +101,7 @@ RSpec.describe "Api::Resources", type: :request do
       non_member = create(:user)
       non_member_headers = auth_headers(non_member)
 
-      get "/api/games/#{game.id}/resources", headers: non_member_headers, as: :json
+      get "/api/games/#{game.slug}/resources", headers: non_member_headers, as: :json
 
       expect(response).to have_http_status(:not_found)
     end
@@ -111,7 +111,7 @@ RSpec.describe "Api::Resources", type: :request do
     let!(:resource) { create(:resource, game: game, name: "Gandalf", player: player) }
 
     it "returns the resource for a game member" do
-      get "/api/games/#{game.id}/resources/#{resource.id}", headers: player_headers, as: :json
+      get "/api/games/#{game.slug}/resources/#{resource.slug}", headers: player_headers, as: :json
 
       expect(response).to have_http_status(:ok)
       expect(json["name"]).to eq("Gandalf")
@@ -121,7 +121,7 @@ RSpec.describe "Api::Resources", type: :request do
       non_member = create(:user)
       non_member_headers = auth_headers(non_member)
 
-      get "/api/games/#{game.id}/resources/#{resource.id}", headers: non_member_headers, as: :json
+      get "/api/games/#{game.slug}/resources/#{resource.slug}", headers: non_member_headers, as: :json
 
       expect(response).to have_http_status(:not_found)
     end
@@ -129,7 +129,7 @@ RSpec.describe "Api::Resources", type: :request do
     it "returns 404 for archived resource" do
       archived = create(:resource, game: game, archived_at: 1.day.ago)
 
-      get "/api/games/#{game.id}/resources/#{archived.id}", headers: player_headers, as: :json
+      get "/api/games/#{game.slug}/resources/#{archived.slug}", headers: player_headers, as: :json
 
       expect(response).to have_http_status(:not_found)
     end
@@ -140,7 +140,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when GM updates" do
       it "updates the resource" do
-        patch "/api/games/#{game.id}/resources/#{resource.id}",
+        patch "/api/games/#{game.slug}/resources/#{resource.slug}",
               params: { resource: { name: "Gandalf the White" } },
               headers: gm_headers, as: :json
 
@@ -151,7 +151,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when owning player updates" do
       it "updates the resource" do
-        patch "/api/games/#{game.id}/resources/#{resource.id}",
+        patch "/api/games/#{game.slug}/resources/#{resource.slug}",
               params: { resource: { name: "Gandalf the Grey" } },
               headers: player_headers, as: :json
 
@@ -162,7 +162,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when non-owning player updates" do
       it "returns 403" do
-        patch "/api/games/#{game.id}/resources/#{resource.id}",
+        patch "/api/games/#{game.slug}/resources/#{resource.slug}",
               params: { resource: { name: "Gandalf the White" } },
               headers: other_player_headers, as: :json
 
@@ -176,7 +176,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when GM archives" do
       it "soft-deletes the resource" do
-        delete "/api/games/#{game.id}/resources/#{resource.id}", headers: gm_headers, as: :json
+        delete "/api/games/#{game.slug}/resources/#{resource.slug}", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json["message"]).to eq("Resource archived successfully")
@@ -186,7 +186,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when owning player archives" do
       it "soft-deletes the resource" do
-        delete "/api/games/#{game.id}/resources/#{resource.id}", headers: player_headers, as: :json
+        delete "/api/games/#{game.slug}/resources/#{resource.slug}", headers: player_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(resource.reload.archived_at).not_to be_nil
@@ -195,7 +195,7 @@ RSpec.describe "Api::Resources", type: :request do
 
     context "when non-owning player archives" do
       it "returns 403" do
-        delete "/api/games/#{game.id}/resources/#{resource.id}", headers: other_player_headers, as: :json
+        delete "/api/games/#{game.slug}/resources/#{resource.slug}", headers: other_player_headers, as: :json
 
         expect(response).to have_http_status(:forbidden)
         expect(resource.reload.archived_at).to be_nil

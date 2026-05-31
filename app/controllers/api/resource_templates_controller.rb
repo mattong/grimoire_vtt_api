@@ -42,7 +42,7 @@ class Api::ResourceTemplatesController < ApplicationController
   private
 
   def set_template
-    @template = @game.resource_templates.active.find(params[:id])
+    @template = @game.resource_templates.active.find_by!(slug: params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Resource template not found" }, status: :not_found
   end
