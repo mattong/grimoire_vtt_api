@@ -54,5 +54,21 @@ RSpec.describe ResourceTemplate, type: :model do
       expect(template.errors[:schema]).to include("field at index 0 is missing 'field_key'")
       expect(template.errors[:schema]).to include("field at index 1 is missing 'input_type'")
     end
+
+    it "is valid with a valid creatable_by value" do
+      template = ResourceTemplate.new(game: game, name: "Template", template_type: "character", schema: valid_schema, creatable_by: "all")
+      expect(template).to be_valid
+    end
+
+    it "is invalid with an unsupported creatable_by value" do
+      template = ResourceTemplate.new(game: game, name: "Template", template_type: "character", schema: valid_schema, creatable_by: "nobody")
+      expect(template).not_to be_valid
+      expect(template.errors[:creatable_by]).to include("is not included in the list")
+    end
+
+    it "defaults creatable_by to 'gm'" do
+      template = ResourceTemplate.new(game: game, name: "Template", template_type: "character", schema: valid_schema)
+      expect(template.creatable_by).to eq("gm")
+    end
   end
 end

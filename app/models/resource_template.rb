@@ -1,10 +1,14 @@
 class ResourceTemplate < ApplicationRecord
+  include Sluggable
+  friendly_id :name, use: [:scoped, :sequentially_slugged], scope: :game_id
+
   belongs_to :game
 
   has_many :resources, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :game_id }
   validates :template_type, inclusion: { in: %w[character item status npc custom] }
+  validates :creatable_by, inclusion: { in: %w[gm all] }
 
   validate :validate_schema_structure
 

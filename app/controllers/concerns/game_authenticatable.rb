@@ -7,7 +7,8 @@ module GameAuthenticatable
   private
 
   def set_game
-    @game = current_user.games.active.find(params[:game_id] || params[:id])
+    @game = current_user.games.active.includes(game_memberships: :user)
+                      .find_by!(slug: params[:game_id] || params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Game not found" }, status: :not_found
   end

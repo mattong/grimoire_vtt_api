@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :resource_template do
     association :game
-    name { Faker::Books::CultureSeries.unique.book }
+    name { Faker::Books::CultureSeries.book }
     template_type { "character" }
     schema {
       {

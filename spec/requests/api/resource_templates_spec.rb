@@ -34,7 +34,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
     context "with valid parameters and gm authentication" do
       it "creates a new ResourceTemplate and returns the template data" do
         expect {
-          post "/api/games/#{game.id}/resource_templates", params: valid_attributes, headers: gm_headers, as: :json
+          post "/api/games/#{game.slug}/resource_templates", params: valid_attributes, headers: gm_headers, as: :json
         }.to change(ResourceTemplate, :count).by(1)
 
         expect(response).to have_http_status(:created)
@@ -47,7 +47,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
     context "with valid parameters and player authentication" do
       it "does not create a new ResourceTemplate and returns an error" do
         expect {
-          post "/api/games/#{game.id}/resource_templates", params: valid_attributes, headers: player_headers, as: :json
+          post "/api/games/#{game.slug}/resource_templates", params: valid_attributes, headers: player_headers, as: :json
         }.not_to change(ResourceTemplate, :count)
 
         expect(response).to have_http_status(:forbidden)
@@ -58,7 +58,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
     context "with invalid parameters" do
       it "does not create a new ResourceTemplate and returns error messages" do
         expect {
-          post "/api/games/#{game.id}/resource_templates",
+          post "/api/games/#{game.slug}/resource_templates",
                params: { resource_template: { name: "", template_type: "", schema: {} } },
                headers: gm_headers,
                as: :json
@@ -71,7 +71,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "without authentication" do
       it "returns an unauthorized error" do
-        post "/api/games/#{game.id}/resource_templates", params: valid_attributes, as: :json
+        post "/api/games/#{game.slug}/resource_templates", params: valid_attributes, as: :json
 
         expect(response).to have_http_status(:unauthorized)
         expect(json["error"]).to eq("You need to sign in or sign up before continuing.")
@@ -90,7 +90,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with gm authentication" do
       it "returns a list of non-archived resource templates for the game" do
-        get "/api/games/#{game.id}/resource_templates", headers: gm_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json.size).to eq(2)
@@ -100,7 +100,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with player authentication" do
       it "returns a list of non-archived resource templates for the game" do
-        get "/api/games/#{game.id}/resource_templates", headers: player_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates", headers: player_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json.size).to eq(2)
@@ -117,21 +117,21 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with gm authentication" do
       it "returns the resource template data if it belongs to the game and is not archived" do
-        get "/api/games/#{game.id}/resource_templates/#{resource_template.id}", headers: gm_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json["name"]).to eq("Character Sheet 1")
       end
 
       it "returns a not found error if the template is archived" do
-        get "/api/games/#{game.id}/resource_templates/#{archived_template.id}", headers: gm_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates/#{archived_template.slug}", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:not_found)
         expect(json["error"]).to eq("Resource template not found")
       end
 
       it "returns a not found error if the template does not belong to the game" do
-        get "/api/games/#{game.id}/resource_templates/#{other_template.id}", headers: gm_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates/#{other_template.id}", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:not_found)
         expect(json["error"]).to eq("Resource template not found")
@@ -140,7 +140,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with player authentication" do
       it "returns the resource template data if it belongs to the game and is not archived" do
-        get "/api/games/#{game.id}/resource_templates/#{resource_template.id}", headers: player_headers, as: :json
+        get "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}", headers: player_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json["name"]).to eq("Character Sheet 1")
@@ -153,7 +153,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with gm authentication" do
       it "updates the resource template and returns the updated data" do
-        patch "/api/games/#{game.id}/resource_templates/#{resource_template.id}",
+        patch "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}",
               params: { resource_template: { name: "Updated Name" } },
               headers: gm_headers,
               as: :json
@@ -165,7 +165,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with player authentication" do
       it "does not update the resource template and returns an error" do
-        patch "/api/games/#{game.id}/resource_templates/#{resource_template.id}",
+        patch "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}",
               params: { resource_template: { name: "Updated Name" } },
               headers: player_headers,
               as: :json
@@ -181,7 +181,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with gm authentication" do
       it "archives the resource template and returns a success message" do
-        delete "/api/games/#{game.id}/resource_templates/#{resource_template.id}", headers: gm_headers, as: :json
+        delete "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}", headers: gm_headers, as: :json
 
         expect(response).to have_http_status(:ok)
         expect(json["message"]).to eq("Resource template archived successfully")
@@ -192,7 +192,7 @@ RSpec.describe "Api::ResourceTemplates", type: :request do
 
     context "with player authentication" do
       it "does not archive the resource template and returns an error" do
-        delete "/api/games/#{game.id}/resource_templates/#{resource_template.id}", headers: player_headers, as: :json
+        delete "/api/games/#{game.slug}/resource_templates/#{resource_template.slug}", headers: player_headers, as: :json
 
         expect(response).to have_http_status(:forbidden)
         expect(json["error"]).to eq("Only a GM can do that!")

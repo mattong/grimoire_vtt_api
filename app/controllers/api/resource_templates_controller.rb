@@ -7,17 +7,17 @@ class Api::ResourceTemplatesController < ApplicationController
 
   def index
     @templates = @game.resource_templates.active
-    render json: @templates, status: :ok
+    render json: ResourceTemplateSerializer.new(@templates).serialize, status: :ok
   end
 
   def show
-    render json: @template, status: :ok
+    render json: ResourceTemplateSerializer.new(@template).serialize, status: :ok
   end
 
   def create
     @template = @game.resource_templates.new(resource_template_params)
     if @template.save
-      render json: @template, status: :created
+      render json: ResourceTemplateSerializer.new(@template).serialize, status: :created
     else
       render json: { errors: @template.errors.full_messages }, status: :unprocessable_content
     end
@@ -25,7 +25,7 @@ class Api::ResourceTemplatesController < ApplicationController
 
   def update
     if @template.update(resource_template_params)
-      render json: @template, status: :ok
+      render json: ResourceTemplateSerializer.new(@template).serialize, status: :ok
     else
       render json: { errors: @template.errors.full_messages }, status: :unprocessable_content
     end
@@ -42,7 +42,7 @@ class Api::ResourceTemplatesController < ApplicationController
   private
 
   def set_template
-    @template = @game.resource_templates.active.find(params[:id])
+    @template = @game.resource_templates.active.find_by!(slug: params[:id])
   rescue ActiveRecord::RecordNotFound
     render json: { error: "Resource template not found" }, status: :not_found
   end

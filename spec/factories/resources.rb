@@ -5,5 +5,11 @@ FactoryBot.define do
     game
     name { "MyString" }
     data { {} }
+
+    after(:build) do |resource|
+      if resource.resource_template.game != resource.game
+        resource.resource_template.game = resource.game
+      end
+    end
   end
 end
