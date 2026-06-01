@@ -4,18 +4,17 @@ class Api::GamesController < ApplicationController
   before_action :set_game, only: [:show, :update, :destroy]
   before_action :ensure_gm!, only: [:update, :destroy]
   def index
-    # Scope to active (non-archived) games the current user is a member of
-    @games = current_user.games.active
-    render json: @games, status: :ok
+    @games = current_user.games.active.includes(game_memberships: :user)
+    render json: GameSerializer.new(@games).serialize, status: :ok
   end
 
   def show
-    render json: @game, status: :ok
+    render json: GameSerializer.new(@game).serialize, status: :ok
   end
 
   def update
     if @game.update(game_params)
-      render json: @game, status: :ok
+      render json: GameSerializer.new(@game).serialize, status: :ok
     else
       render json: { errors: @game.errors.full_messages }, status: :unprocessable_content
     end
@@ -31,11 +30,10 @@ class Api::GamesController < ApplicationController
 
   def create
     @game = Game.new(game_params)
-    # Equivalent to Ecto.Multi
     ActiveRecord::Base.transaction do
       @game.save!
       @game.game_memberships.create!(user: current_user, role: :gm)
-      render json: @game, status: :created
+      render json: GameSerializer.new(@game).serialize, status: :created
     end
   rescue ActiveRecord::RecordInvalid => e
     render json: { errors: e.record.errors.full_messages }, status: :unprocessable_content
