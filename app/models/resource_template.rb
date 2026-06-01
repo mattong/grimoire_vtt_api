@@ -5,6 +5,7 @@ class ResourceTemplate < ApplicationRecord
 
   validates :name, presence: true, uniqueness: { scope: :game_id }
   validates :template_type, inclusion: { in: %w[character item status npc custom] }
+  validates :creatable_by, inclusion: { in: %w[gm all] }
 
   validate :validate_schema_structure
 
